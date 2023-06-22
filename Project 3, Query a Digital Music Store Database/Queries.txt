@@ -1,0 +1,51 @@
+/* Query 1 - Who are the top 5 artist in terms of number of albums? */
+
+
+SELECT A.ArtistId,
+       A.Name,
+       COUNT(*) AS Number_of_Albums
+FROM Artist AS A
+JOIN Album AS L ON A.ArtistId = L.ArtistId
+GROUP BY 1,
+         2
+ORDER BY Number_of_Albums DESC
+LIMIT 5;
+
+
+/* Query 2 - What are the genres that have average track price 1$ or over? */
+
+
+SELECT G.Name,
+       ROUND(AVG(T.UnitPrice), 2) AS Average_Price,
+       CASE
+           WHEN ROUND(AVG(T.UnitPrice), 2) >= 1 THEN 'TRUE'
+           ELSE 'FALSE'
+       END AS Is_Price_Over_One
+FROM Genre AS G
+JOIN Track AS T ON G.GenreId = T.GenreId
+GROUP BY 1;
+
+
+/* Query 3 - What is the number of purchases for each genre?  */
+
+
+SELECT g.Name,
+       COUNT(i.InvoiceId) AS 'Number_of_Purchases'
+FROM Genre AS g
+JOIN Track AS t ON g.GenreId = t.GenreId
+JOIN InvoiceLine AS i ON t.TrackId = i.TrackId
+GROUP BY 1
+ORDER BY 2 DESC;
+
+
+
+/* Query 4 - How much USA customer spent?  */
+
+
+SELECT c.FirstName || " " || c.LastName AS Name,
+       SUM(i.Total) AS 'Total_Sales'
+FROM Customer AS c
+JOIN Invoice AS i ON c.CustomerId = i.CustomerId
+WHERE c.Country = 'USA'
+GROUP BY 1
+ORDER BY 2 DESC;
